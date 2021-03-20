@@ -1,2 +1,2 @@
-# ArkKnightsRecruitmentHelper
-ArkKnightsRecruitmentHelper
+# ArknightsRecruitmentHelper
+ArknightsRecruitmentHelper
