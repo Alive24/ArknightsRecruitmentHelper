@@ -45,7 +45,7 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
         super(GUIMainWin, self).__init__(parent)
         # Basic Setups
         self.setupUi(self)
-        self.appExceptionHandler = ExceptHookHandler(self, logFile=os.path.join(os.path.expanduser('~'), "PCRJJCAnalyzer", "log.txt"))
+        self.appExceptionHandler = ExceptHookHandler(self, logFile=os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper", "log.txt"))
         self.setWindowTitle(globalVersion)
         # Key Initializations
         self.handle = 0
@@ -135,12 +135,15 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
                     self.tagFourLabel.setText(tagType)
                 if i == 4:
                     self.tagFiveLabel.setText(tagType)
-        except:
+                print('tagType %s'%i, tagType)
+        except Exception as e:
+            print(e)
             pass
-        self.tagTypeList = list(filter(lambda item: item != "新手", self.tagTypeList))
         candidateList = []
         for key in list(dataDict.keys()):
             try:
+                processedTagTypeList = copy.deepcopy(self.tagTypeList[i])
+                processedTagTypeList = list(filter(lambda item: item != "新手", processedTagTypeList))
                 processedTagList = copy.deepcopy(dataDict[key]["tagList"])
                 if dataDict[key]['position'] == "RANGED":
                     processedTagList.append("远程位")
