@@ -20,6 +20,7 @@ from PyQt5 import QtGui, QtCore, QtNetwork
 global globalVersion
 globalVersion = 'ArknightsRecruimentHelper-v0.0.1-beta1'
 global dataDict
+global strategyListDict
 
 
 ## PrepareInitialPaths
@@ -29,7 +30,14 @@ if not os.path.exists(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmen
     with open(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper",  "characterData.json"),'w',encoding='utf-8') as file:
         emptyDict = {"char_285_medic2": ""}
         json.dump(emptyDict, file, ensure_ascii=False)
-
+if not os.path.exists(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper", "excludedOperatorList.json")):
+    with open(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper",  "excludedOperatorList.json"),'w',encoding='utf-8') as file:
+        emptyList = []
+        json.dump(emptyList, file, ensure_ascii=False)
+if not os.path.exists(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper", "strategyListDict.json")):
+    with open(os.path.join(os.path.expanduser('~'), "ArknightsRecruitmentHelper",  "strategyListDict.json"),'w',encoding='utf-8') as file:
+        emptyDict = {'singleTagStrategyList': [], 'doubleTagStrategyList': [] }
+        json.dump(emptyDict, file, ensure_ascii=False)
 
 
 ## Prepare Local Modules
@@ -87,6 +95,7 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
             self.queryStatusTag.setText("请选择句柄")
             self.queryStatusTag.setStyleSheet("color:red")
     def recognizeAndAnalyze(self, slotNum:[0,1,2,3]):
+        strategyListDict = util.config_loadStrategyListDict()
         self.tagOneLabel.setText("识别中...")
         self.tagTwoLabel.setText("识别中...")
         self.tagThreeLabel.setText("识别中...")
@@ -123,7 +132,7 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
                 preparedImage = np.array(ptr).reshape(h, w, 4) #此处完成转换
                 preparedImage = cv2.cvtColor(preparedImage, cv2.COLOR_BGRA2BGR)
                 tagType = "".join(self.ocrInstance.ocr_for_single_line(preparedImage))
-                tagType = re.sub('[\x00-\xff]', '', tagType)
+                tagType = re.sub('[\x00-\xff，-]', '', tagType)
                 self.tagTypeList[i] = tagType
                 if i == 0:
                     self.tagOneLabel.setText(tagType)
@@ -139,30 +148,40 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
         except Exception as e:
             print(e)
             pass
-        candidateList = []
-        for key in list(dataDict.keys()):
-            try:
-                processedTagTypeList = copy.deepcopy(self.tagTypeList[i])
-                processedTagTypeList = list(filter(lambda item: item != "新手", processedTagTypeList))
-                processedTagList = copy.deepcopy(dataDict[key]["tagList"])
-                if dataDict[key]['position'] == "RANGED":
-                    processedTagList.append("远程位")
-                else:
-                    processedTagList.append("近战位位")
-                intersection = list(set(processedTagList) & set(self.tagTypeList))
-                if len(intersection) != 0:
-                    candidateList.append(dataDict[key])
-            except:
-                pass
-        readableCandidateList = [candidate["name"] for candidate in candidateList]
-        print(readableCandidateList)
+        candidateStrategyListDict = {
+            'singleTagStrategyList': [],
+            'doubleTagStrategyList': []
+        }
+        for singleTagStrategy in strategyListDict['singleTagStrategyList']:
+            if singleTagStrategy['tag'] in self.tagTypeList:
+                candidateStrategyListDict['singleTagStrategyList'].append(singleTagStrategy)
+        for doubleTagStrategy in strategyListDict['doubleTagStrategyList']:
+            if set(doubleTagStrategy['tagCombination']).issubset(self.tagTypeList):
+                candidateStrategyListDict['doubleTagStrategyList'].append(doubleTagStrategy)
+        print(candidateStrategyListDict)
+        # for key in list(dataDict.keys()):
+        #     try:
+        #         processedTagTypeList = copy.deepcopy(self.tagTypeList[i])
+        #         processedTagTypeList = list(filter(lambda item: item != "新手", processedTagTypeList))
+        #         processedTagList = copy.deepcopy(dataDict[key]["tagList"])
+        #         if dataDict[key]['position'] == "RANGED":
+        #             processedTagList.append("远程位")
+        #         else:
+        #             processedTagList.append("近战位位")
+        #         intersection = list(set(processedTagList) & set(self.tagTypeList))
+        #         if len(intersection) != 0:
+        #             candidateList.append(dataDict[key])
+        #     except:
+        # #         pass
+        # readableCandidateList = [candidate["name"] for candidate in candidateList]
+        # print(readableCandidateList)
     def updateData(self):
         url = "https://github.91chifun.workers.dev//https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json"
         newOTARunnable = OTARunnable(url)
         QThreadPool.globalInstance().start(newOTARunnable)
         # 这里可能会产生异步问题
         dataDict = util.loadDataDict()
-        print(dataDict)
+        strategyListDict = util.config_loadStrategyListDict()
 
 # class tagImageToTagTypeRunnable(QRunnable):
 #     def __init__(self, image, tagIndex, GUIMainWin):
@@ -197,6 +216,8 @@ if __name__ == '__main__':
     ### CLI测试部分
     config_dict = util.config_loadConfig()
     dataDict = util.loadDataDict()
+    excludedOperatorList = util.config_loadExcludedOperatorList()
+    strategyListDict = util.config_loadStrategyListDict()
     # refImageParams = util.config_getRefImageParams()
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
