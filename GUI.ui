@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
+    <width>803</width>
     <height>372</height>
    </rect>
   </property>
@@ -278,6 +278,62 @@
    <property name="text">
     <string>更新数据</string>
    </property>
+  </widget>
+  <widget class="QLabel" name="singleTagStrategyListLabel">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>10</y>
+     <width>54</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>单Tag可锁</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="doubleTagStrategyListLabel">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>10</y>
+     <width>54</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>双Tag可锁</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>30</y>
+     <width>201</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="singleTagStrategyListLayout">
+    <item>
+     <widget class="QPlainTextEdit" name="singleTagStrategyListTempPlainTextEdit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>30</y>
+     <width>201</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="doubleTagStrategyListLayout">
+    <item>
+     <widget class="QPlainTextEdit" name="doubleTagStrategyListTempPlainTextEdit"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

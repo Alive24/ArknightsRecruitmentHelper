@@ -1,0 +1,48 @@
+astroid @ file:///C:/ci/astroid_1613500971479/work
+autopep8==1.5.3
+certifi==2020.12.5
+chardet==3.0.4
+cnocr==1.2.2
+colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
+cycler==0.10.0
+flake8==3.8.3
+gluoncv==0.6.0
+graphviz==0.8.4
+idna==2.6
+isort @ file:///tmp/build/80754af9/isort_1612243941122/work
+jedi==0.17.2
+kiwisolver==1.3.1
+lazy-object-proxy @ file:///C:/ci/lazy-object-proxy_1606850189121/work
+matplotlib==3.3.4
+mccabe==0.6.1
+mxnet==1.6.0
+numpy==1.16.6
+opencv-python==4.5.1.48
+parso==0.7.0
+Pillow==8.1.2
+portalocker==2.2.1
+pycodestyle==2.6.0
+pydocstyle==5.0.2
+pyflakes==2.2.0
+pylint @ file:///C:/ci/pylint_1614971299523/work
+pyparsing==2.4.7
+PyQt5==5.15.4
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.8.1
+pytesseract==0.3.7
+python-dateutil==2.8.1
+python-jsonrpc-server==0.3.4
+python-language-server==0.34.1
+pywin32==300
+Quamash==0.6.1
+requests==2.18.4
+scipy==1.6.1
+six @ file:///C:/ci/six_1605205426665/work
+tesseract==0.1.3
+toml==0.10.1
+tqdm==4.59.0
+typed-ast==1.4.1
+urllib3==1.22
+wincertstore==0.2
+wrapt==1.12.1
+yapf==0.30.0

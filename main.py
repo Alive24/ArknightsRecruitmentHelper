@@ -61,6 +61,8 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
         self.tagImageSceneList = [QGraphicsScene(), QGraphicsScene(), QGraphicsScene(), QGraphicsScene(), QGraphicsScene()]
         self.tagTypeList = ["", "", "", "", ""]
         # Handler Connections
+        self.handleSelectorComboBox.activated[str].connect(self.onHandleSelect)
+        self.updateHandleSelectorListButton.clicked.connect(self.initializeHandleSelector)
         self.manualRecognizeAndAnalyzeButton.clicked.connect(self.recognizeAndAnalyze)
         self.updateDataButton.clicked.connect(self.updateData)
         self.ocrInstance = CnOcr(model_name='conv-lite-fc')
@@ -94,6 +96,15 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
         else:
             self.queryStatusTag.setText("请选择句柄")
             self.queryStatusTag.setStyleSheet("color:red")
+    def onHandleSelect(self, handleTitle):
+        def getHandle(handleTitle):
+            for handle in self.handleList:
+                if handle[1] == handleTitle:
+                    return handle
+        targetHandle = getHandle(handleTitle)
+        self.handle = targetHandle[0]
+        self.queryStatusTag.setText("等待查询")
+        self.queryStatusTag.setStyleSheet("color:green")
     def recognizeAndAnalyze(self, slotNum:[0,1,2,3]):
         strategyListDict = util.config_loadStrategyListDict()
         self.tagOneLabel.setText("识别中...")
@@ -159,6 +170,22 @@ class GUIMainWin(QMainWindow, Ui_ArknightsRecruimentHelperGUI):
             if set(doubleTagStrategy['tagCombination']).issubset(self.tagTypeList):
                 candidateStrategyListDict['doubleTagStrategyList'].append(doubleTagStrategy)
         print(candidateStrategyListDict)
+        self.singleTagStrategyListTempPlainTextEdit.clear()
+        self.doubleTagStrategyListTempPlainTextEdit.clear()
+        if len(candidateStrategyListDict['singleTagStrategyList']) == 0:
+            self.singleTagStrategyListTempPlainTextEdit.appendPlainText('无结果')
+        else:
+            for singleTagStrategy in candidateStrategyListDict['singleTagStrategyList']:
+                self.singleTagStrategyListTempPlainTextEdit.appendPlainText("选择%s可以锁定：\n" % singleTagStrategy['tag'])
+                for plausibleOperator in singleTagStrategy['plausibleList']:
+                    self.singleTagStrategyListTempPlainTextEdit.appendPlainText("⭐%s %s" %(str((plausibleOperator['rarity'] + 1)),plausibleOperator['name']))
+        if len(candidateStrategyListDict['doubleTagStrategyList']) == 0:
+            self.doubleTagStrategyListTempPlainTextEdit.appendPlainText('无结果')    
+        else:
+            for doubleTagStrategy in candidateStrategyListDict['doubleTagStrategyList']:
+                self.doubleTagStrategyListTempPlainTextEdit.appendPlainText("选择%s + %s 可以锁定：\n" % (doubleTagStrategy['tagCombination'][0], doubleTagStrategy['tagCombination'][1]))
+                for plausibleOperator in doubleTagStrategy['plausibleList']:
+                    self.doubleTagStrategyListTempPlainTextEdit.appendPlainText("⭐%s %s" %(str((plausibleOperator['rarity'] + 1)),plausibleOperator['name']))
         # for key in list(dataDict.keys()):
         #     try:
         #         processedTagTypeList = copy.deepcopy(self.tagTypeList[i])
