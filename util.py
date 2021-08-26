@@ -130,7 +130,7 @@ def generateStrategyListDict():
     def dataDictEntryTrimmer(dataDictEntry):
         excludedOperatorList = config_loadExcludedOperatorList()
         flag = True
-        if dataDictEntry['itemObtainApproach'] != '招募寻访':
+        if not dataDictEntry['itemObtainApproach'] in ['招募寻访', "限时礼包"]:
             flag = False
         if dataDictEntry['rarity'] < 2:
             flag = False
