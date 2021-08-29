@@ -12,28 +12,28 @@ default_dict = {
     "tagImageParams":
         {
             "widthRatio": 0.1120, 
-            "heightRatio": 0.067,
+            "heightRatio": 0.035,
             "tagLocationRatio":
                 [
                     {
                         'x': 0.2975,
-                        'y': 0.50,
+                        'y': 0.515,
                     },
                     {
                         'x': 0.425,
-                        'y': 0.50,
+                        'y': 0.515,
                     },
                     {
                         'x': 0.55625,
-                        'y': 0.50,
+                        'y': 0.515,
                     },
                     {
                         'x': 0.2975,
-                        'y': 0.60,
+                        'y': 0.615,
                     },
                     {
                         'x': 0.425,
-                        'y': 0.60,
+                        'y': 0.615,
                     },
                 ]
         }
@@ -130,7 +130,7 @@ def generateStrategyListDict():
     def dataDictEntryTrimmer(dataDictEntry):
         excludedOperatorList = config_loadExcludedOperatorList()
         flag = True
-        if dataDictEntry['itemObtainApproach'] != '招募寻访':
+        if not dataDictEntry['itemObtainApproach'] in ['招募寻访', "限时礼包"]:
             flag = False
         if dataDictEntry['rarity'] < 2:
             flag = False
